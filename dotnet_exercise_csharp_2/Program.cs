@@ -19,6 +19,7 @@ namespace dotnet_exercise_csharp_2
                 Console.WriteLine("1. Beräkna pris för kund");
                 Console.WriteLine("2. Beräkna pris för grupp");
                 Console.WriteLine("3. Loopa text");
+                Console.WriteLine("4. Skriv ut tredje ordet");
                 Console.WriteLine("0. Avsluta programmet");
                 Console.Write($"{Environment.NewLine}");
                 Console.Write("Ange siffra för ditt val: ");
@@ -47,6 +48,10 @@ namespace dotnet_exercise_csharp_2
                         break;
                     case 3:
                         PrintTextInLoop();
+                        Console.Clear();
+                        break;
+                    case 4:
+                        SplitText();
                         Console.Clear();
                         break;
                     default:
@@ -127,34 +132,25 @@ namespace dotnet_exercise_csharp_2
             string input = "";
 
             // Ask string
-            Console.WriteLine("Skriv ut ord 10 gånger  ");
+            Console.WriteLine("Skriv ut text 10 gånger  ");
             Console.WriteLine($"-----------------------------{Environment.NewLine}");
             
-
             do
             {
                 Console.Write("Ange text att loopa: ");
                 input = Console.ReadLine() ?? "";
-
                 if (input == "")
                 {
-                    Console.WriteLine("Data saknas");
+                    Console.WriteLine("Text saknas");
                 }
 
             } while (input == "");
 
 
             // Print string 10 times
-            if (input != "")
+            for(int i = 0; i<10; i++)
             {
-                for(int i = 0; i<10; i++)
-                {
-                    Console.Write($"{i + 1}. {input} ");
-                }
-            }
-            else
-            {
-                Console.WriteLine("No data present");
+                Console.Write($"{i + 1}. {input} ");
             }
 
             // Show info until key pressed, then return to main menu
@@ -162,6 +158,43 @@ namespace dotnet_exercise_csharp_2
             WaitForKeyPress();
         }
 
+        public static void SplitText()
+        {
+            string input = "";
+            bool goodValue = false;
+            string[] split;
+            string[] strippedSplit;
+
+            // Ask string
+            Console.WriteLine("Skriv ut det tredje ordet  ");
+            Console.WriteLine($"-----------------------------{Environment.NewLine}");
+
+            do
+            {
+                Console.Write("Ange text med minst tre ord: ");
+                input = Console.ReadLine() ?? "";
+
+                if (!string.IsNullOrWhiteSpace(input))
+                {
+                    split = input.Split(' ');
+                    strippedSplit = split.Where(s => !string.IsNullOrWhiteSpace(s)).ToArray();
+                    if (strippedSplit.Length >= 3)
+                    {
+                        Console.WriteLine($"Tredje ordet: {strippedSplit[2]}");
+                        goodValue = true;
+                    }
+                }
+
+                if (!goodValue)
+                {
+                    Console.WriteLine("Ange minst tre ord!");
+                }
+            } while (!goodValue);
+
+            // Show info until key pressed, then return to main menu
+            Console.WriteLine("");
+            WaitForKeyPress();
+        }
         public static int GetPriceForAge(int age)
         {
             int price = -1;
