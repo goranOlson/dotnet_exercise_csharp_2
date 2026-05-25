@@ -109,7 +109,12 @@ namespace dotnet_exercise_csharp_2
 
 
             //Present users price
-            if (years < 20)
+            if (years < 5 || years > 100)
+            {
+                // Console.WriteLine("Gratis: " + GetPriceForAge(years) + " kr");
+                Console.WriteLine("Gratis inträde!");
+            }
+            else if (years < 20)
             {
                 Console.WriteLine("Ungdomspris: " + GetPriceForAge(years) + " kr");
             }
@@ -165,7 +170,7 @@ namespace dotnet_exercise_csharp_2
             string[] split;
             string[] strippedSplit;
 
-            // Ask string
+            // Ask for at least three words and print out the third
             Console.WriteLine("Skriv ut det tredje ordet  ");
             Console.WriteLine($"-----------------------------{Environment.NewLine}");
 
@@ -174,6 +179,7 @@ namespace dotnet_exercise_csharp_2
                 Console.Write("Ange text med minst tre ord: ");
                 input = Console.ReadLine() ?? "";
 
+                //Split text by ' ' and print out the third word
                 if (!string.IsNullOrWhiteSpace(input))
                 {
                     split = input.Split(' ');
@@ -195,13 +201,18 @@ namespace dotnet_exercise_csharp_2
             Console.WriteLine("");
             WaitForKeyPress();
         }
+        
         public static int GetPriceForAge(int age)
         {
             int price = -1;
 
             if (age >= 0)
             {
-                if (age < 20)
+                if (age < 5 || age > 100)
+                {
+                    price = 0;
+                }
+                else if (age < 20)
                 {
                     price = 80;
                 }
