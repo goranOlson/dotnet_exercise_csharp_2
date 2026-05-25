@@ -13,15 +13,15 @@ namespace dotnet_exercise_csharp_2
 
             do
             {
-                // Print main menu
+                // Print main menu and capture user selection
                 Console.WriteLine("         Huvudmeny         ");
                 Console.WriteLine("===========================");
                 Console.WriteLine("1. Beräkna pris för kund");
                 Console.WriteLine("2. Beräkna pris för grupp");
+                Console.WriteLine("3. Loopa text");
                 Console.WriteLine("0. Avsluta programmet");
-                Console.Write($"{Environment.NewLine}Ange siffra för ditt val: ");
-
-                // Capture user input and validate it
+                Console.Write($"{Environment.NewLine}");
+                Console.Write("Ange siffra för ditt val: ");
 
                 input = Console.ReadLine() ?? "";
                 if (!int.TryParse(input, out menuSelection))
@@ -38,134 +38,195 @@ namespace dotnet_exercise_csharp_2
                         Console.WriteLine("Avslutar programmet...");
                         break;
                     case 1:
-                        CalculateTicketCost();
+                        CalculateIndividualPrice();
                         Console.Clear();
                         break;
                     case 2:
-                        Console.WriteLine("Alternativ 2");
                         CalculateGroupPrice();
-                        //Console.Clear();
+                        Console.Clear();
+                        break;
+                    case 3:
+                        PrintTextInLoop();
+                        Console.Clear();
                         break;
                     default:
-                        Console.Clear();
-                        Console.WriteLine($"+--------------+{Environment.NewLine}| Ogiltigt val |{Environment.NewLine}+--------------+{Environment.NewLine}");
+                        Console.WriteLine("+--------------+");
+                        Console.WriteLine("| Ogiltigt val |");
+                        Console.WriteLine("+--------------+");
+                        Console.WriteLine("");
                         break;
                 }
-                Console.Clear();
-                // Console.WriteLine("Next loop");
             } while (keepRunning);
         }
 
         public static void CalculateGroupPrice()
         {
-            int sum = 0;
-            int count = 0;
-            int years = -1;
-            string input = "";
-            
-            Console.WriteLine("  Beräkna pris för grupp  ");
-            Console.WriteLine("--------------------------");
-            Console.WriteLine($"Avbryt med tom rad{Environment.NewLine}");
+            int nbrPeople = -1;
+            int summa = 0;
 
+            Console.WriteLine("Beräkna pris för grupp  ");
+            Console.WriteLine($"-----------------------------{Environment.NewLine}");
 
-            do
+            //Get number of people in the group
+            nbrPeople = AskIntValue("Ange antal personer i gruppen: ", 0);
+            Console.WriteLine("");
+
+            //Get the sum of prices for every person in the group
+            if (nbrPeople >= 1)
             {
-                Console.Write("Ange ålder: ");
-                input = Console.ReadLine() ?? "";
-                if (int.TryParse(input, out years) && years > 0)
+                for (int i = 0; i < nbrPeople; i++)
                 {
-                    // Console.WriteLine("Good years");
-
-                    count++;
-                    switch (years)
-                    {
-                        case < 20:
-                            sum += 80;
-                            break;
-                        case > 64:
-                            sum += 90;
-                            break;
-                        default:
-                            sum += 120;
-                            break;
-                    }
+                    int age = AskIntValue($"Ange ålder för person {i + 1}: ");
+                    summa += GetPriceForAge(age);
                 }
-                else if (input != "")
-                {
-                    Console.WriteLine("Bad years");
-                }
-
-            } while(input != "");
-            // Console.WriteLine("Klar med grupp...");
-
-            // sum och antal
-            // Console.WriteLine($"Antal personer: {count}, summa: {sum} kr");
-            Console.WriteLine($"Pris: {sum} för {count} personer");
-
-            Stopper();
-            // Console.Clear();
-        }
-
-        public static void CalculateTicketCost()
-        {
-            string inputYears = "";
-            int years = -1;
-            bool validInput = false;
-
-            Console.WriteLine("  Beräkna pris för enskild kund  ");
-            Console.WriteLine("-------------------------");
-
-            do
+                Console.WriteLine("");
+                Console.WriteLine($"Antal personer: {nbrPeople}");
+                Console.WriteLine($"Summa för gruppen: {summa}");
+            }
+            else
             {
-                // Print error message
-                if (inputYears != "")
-                {
-                    Console.WriteLine($"+---------------+{Environment.NewLine}| Ogiltig ålder |{Environment.NewLine}+---------------+{Environment.NewLine}");
-                }
-
-                // Ask for customers age and calculate price
-                Console.Write("Ange kundens ålder: ");
-                inputYears = Console.ReadLine() ?? "";
-
-                if (int.TryParse(inputYears, out years))
-                {
-                    if (years < 20)
-                    {
-                        Console.WriteLine("Ungdomspris: 80 kr");
-                    }
-                    else if (years > 64)
-                    {
-                        Console.WriteLine("Pensionärspris: 90 kr");
-                    }
-                    else
-                    {
-                        Console.WriteLine("Standartpris: 120 kr");
-                    }
-
-                    // Exit loop and return to main menu
-                    //Console.WriteLine($"{Environment.NewLine}Tryck på valfri tangent för att gå till huvudmenyn");
-                    //ConsoleKeyInfo key = Console.ReadKey();
-                    //if (key.ToString() != "")
-                    //{
-                    //    validInput = true;
-                    //}
-                    validInput = Stopper();
-                }
-            } while (!validInput);
-            // Console.Clear();
-        }
-
-        public static bool Stopper()
-        {
-            bool validInput = false;
-            Console.WriteLine($"{Environment.NewLine}Tryck på valfri tangent för att gå till huvudmenyn");
-            ConsoleKeyInfo key = Console.ReadKey();
-            if (key.ToString() != "")
-            {
-                validInput = true;
+                Console.WriteLine("Antal är '0'. Avbryter...");
             }
 
-            return validInput;
+            // Show info until key pressed, then return to main menu
+            WaitForKeyPress();
+        }
+
+        public static void CalculateIndividualPrice()
+        {
+            int years = -1;
+
+            Console.WriteLine("Beräkna pris för enskild kund");
+            Console.WriteLine($"-----------------------------{Environment.NewLine}");
+
+            //Ask for customers age and calculate price
+            years = AskIntValue("Ange kundens ålder: ");  // -1 vid 0
+
+
+            //Present users price
+            if (years < 20)
+            {
+                Console.WriteLine("Ungdomspris: " + GetPriceForAge(years) + " kr");
+            }
+            else if (years > 64)
+            {
+                Console.WriteLine("Pensionärspris: " + GetPriceForAge(years) + " kr");
+            }
+            else
+            {
+                Console.WriteLine("Standartpris: " + GetPriceForAge(years) + " kr");
+            }
+
+
+            // Show info until key pressed, then return to main menu
+            WaitForKeyPress();
+        }
+
+        public static void PrintTextInLoop()
+        {
+            string input = "";
+
+            // Ask string
+            Console.WriteLine("Skriv ut ord 10 gånger  ");
+            Console.WriteLine($"-----------------------------{Environment.NewLine}");
+            
+
+            do
+            {
+                Console.Write("Ange text att loopa: ");
+                input = Console.ReadLine() ?? "";
+
+                if (input == "")
+                {
+                    Console.WriteLine("Data saknas");
+                }
+
+            } while (input == "");
+
+
+            // Print string 10 times
+            if (input != "")
+            {
+                for(int i = 0; i<10; i++)
+                {
+                    Console.Write($"{i + 1}. {input} ");
+                }
+            }
+            else
+            {
+                Console.WriteLine("No data present");
+            }
+
+            // Show info until key pressed, then return to main menu
+            Console.WriteLine("");
+            WaitForKeyPress();
+        }
+
+        public static int GetPriceForAge(int age)
+        {
+            int price = -1;
+
+            if (age >= 0)
+            {
+                if (age < 20)
+                {
+                    price = 80;
+                }
+                else if (age > 64)
+                {
+                    price = 90;
+                }
+                else
+                {
+                    price = 120;
+                }
+            }
+            
+            return price;
+        }
+
+        public static int AskIntValue(string query, int minValue = 0, int maxValue = -1)  // maxValue ?
+        {
+            int intValue = -1;
+            string input = "";
+            bool validInput = false;
+
+            do
+            {
+                Console.Write(query);// "Ange ålder: "
+                input = Console.ReadLine() ?? "";
+
+                if (int.TryParse(input, out intValue))  // maxValue
+                {
+                    if (intValue >= minValue && (maxValue == -1 || maxValue >= intValue))
+                    {
+                        validInput = true;
+                    }
+                }
+
+                if (!validInput)
+                {
+                    Console.WriteLine("Ogiltigt värde!");
+                }
+            }
+            while (!validInput);
+
+            return intValue;
+        }
+
+        public static bool WaitForKeyPress()
+        {
+            bool keyIsPressed = false;
+
+            Console.WriteLine($"{Environment.NewLine}Tryck på valfri tangent för att gå till huvudmenyn");
+            ConsoleKeyInfo key = Console.ReadKey();
+
+            if (key.ToString() != "")
+            {
+                keyIsPressed = true;
+            }
+
+            return keyIsPressed;
         }
     }
 }
